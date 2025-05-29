@@ -1,0 +1,90 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class SimpleQuiz extends JFrame {
+    private String[][] questions = {
+            {"What is 2 + 2?", "3", "4", "5", "6", "4"}, 
+            {"Which is a programming language?", "Carrot", "Java", "Table", "Shoe", "Java"},
+            {"What is the capital of France?", "London", "Berlin", "Paris", "Rome", "Paris"}
+    };
+
+    private int currentQuestion = 0;
+    private int score = 0;
+
+    private JLabel questionLabel;
+    private JRadioButton[] options;
+    private JButton nextButton;
+
+    public SimpleQuiz() {
+        setTitle("Simple Quiz");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+       
+        questionLabel = new JLabel("", JLabel.CENTER);
+        questionLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        add(questionLabel, BorderLayout.NORTH);
+
+       
+        JPanel optionsPanel = new JPanel(new GridLayout(4, 1));
+        options = new JRadioButton[4];
+        ButtonGroup group = new ButtonGroup();
+
+        for (int i = 0; i < 4; i++) {
+            options[i] = new JRadioButton();
+            group.add(options[i]);
+            optionsPanel.add(options[i]);
+        }
+        add(optionsPanel, BorderLayout.CENTER);
+
+        
+        nextButton = new JButton("Next");
+        nextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                checkAnswer();
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }
+        });
+        add(nextButton, BorderLayout.SOUTH);
+
+        showQuestion(); 
+        setVisible(true);
+    }
+
+    private void showQuestion() {
+        questionLabel.setText(questions[currentQuestion][0]); 
+      
+        for (int i = 0; i < 4; i++) {
+            options[i].setText(questions[currentQuestion][i + 1]);
+            options[i].setSelected(false); 
+        }
+    }
+
+    private void checkAnswer() {
+        for (int i = 0; i < 4; i++) {
+            if (options[i].isSelected() && options[i].getText().equals(questions[currentQuestion][5])) {
+                score++;
+            }
+        }
+    }
+
+    private void showResult() {
+        JOptionPane.showMessageDialog(this, 
+                "Quiz Over!\nYour Score: " + score + "/" + questions.length,
+                "Result", JOptionPane.INFORMATION_MESSAGE);
+        System.exit(0);
+    }
+
+    public static void main(String[] args) {
+        new SimpleQuiz();
+    }
+}
